@@ -4,8 +4,12 @@ sealed class TodayEvent {
   const TodayEvent();
 }
 
-class TodayChooseMood extends TodayEvent {
-  const TodayChooseMood(this.mood);
+class TodayLoadEvent extends TodayEvent {
+  const TodayLoadEvent();
+}
+
+class TodayChooseMoodEvent extends TodayEvent {
+  const TodayChooseMoodEvent(this.mood);
 
   final MoodEntity mood;
 }

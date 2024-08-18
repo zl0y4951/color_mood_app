@@ -1,6 +1,9 @@
+import 'package:color_mood_app/src/core/extensions/date_time.dart';
+import 'package:color_mood_app/src/core/models/mood/mood.dart';
 import 'package:color_mood_app/src/core/models/mood/mood_enum.dart';
 import 'package:color_mood_app/src/core/widgets/custom_button.dart';
 import 'package:color_mood_app/src/core/widgets/mood_box_widget.dart';
+import 'package:color_mood_app/src/feature/today/bloc/today_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,9 +30,14 @@ class _TodayScreenState extends State<TodayScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocProvider(
-        create: (_)=>,
-        child: BlocBuilder(
-          builder: (context,state) {
+        create: (_) => TodayBloc()..add(const TodayLoadEvent()),
+        child: BlocBuilder<TodayBloc, TodayState>(
+          builder: (context, state) {
+            // if (state is TodayIdleState) {
+            //   if (state.current != null) {
+            //     current = state.current!.moodCondition - 1;
+            //   }
+            // }
             return Column(
               children: [
                 const SizedBox(height: 54),
@@ -41,7 +49,8 @@ class _TodayScreenState extends State<TodayScreen> {
                 const SizedBox(height: 36),
                 MoodBoxWidget(
                   size: 200,
-                  color: current != null ? MoodEnum.values[current!].color : null,
+                  color:
+                      current != null ? MoodEnum.values[current!].color : null,
                 ),
                 const SizedBox(height: 144),
                 Row(
@@ -52,13 +61,26 @@ class _TodayScreenState extends State<TodayScreen> {
                 ),
                 const SizedBox(height: 72),
                 CustomButton(
-                  text: 'Добавить',
+                  text: state is TodayIdleState && state.current != null
+                      ? 'Изменить'
+                      : 'Добавить',
                   padding: const EdgeInsets.symmetric(horizontal: 42),
-                  onPressed: () {},
+                  onPressed: current == null
+                      ? null
+                      : () {
+                          context.read<TodayBloc>().add(
+                                TodayChooseMoodEvent(
+                                  MoodEntity(
+                                    moodCondition: current! + 1,
+                                    datetime: DateTime.now().getDay,
+                                  ),
+                                ),
+                              );
+                        },
                 )
               ],
             );
-          }
+          },
         ),
       ),
     );

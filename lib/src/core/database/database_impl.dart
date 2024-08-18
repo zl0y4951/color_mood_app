@@ -25,6 +25,15 @@ class Database extends _$Database implements IDatabase {
   }
 
   @override
+  Future<MoodEntity?> getCurrentMood(DateTime date) async {
+    final mood = await (select(moodTable)
+          ..where((tbl) => tbl.datetime.equals(date)))
+        .getSingleOrNull();
+    if (mood == null) return null;
+    return MoodEntity.fromEntry(mood);
+  }
+
+  @override
   Future<List<MoodEntity>> getMoods() async {
     return (await select(moodTable).get())
         .map((entry) => MoodEntity.fromEntry(entry))

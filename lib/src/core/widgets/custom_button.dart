@@ -18,12 +18,14 @@ class CustomButton extends StatelessWidget {
           style: ButtonStyle(
             minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
             backgroundColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.pressed)
+              (states) => states.contains(WidgetState.pressed) ||
+                      states.contains(WidgetState.disabled)
                   ? CustomColors.grey
                   : CustomColors.black,
             ),
             foregroundColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.pressed)
+              (states) => states.contains(WidgetState.pressed) ||
+                      states.contains(WidgetState.disabled)
                   ? CustomColors.darkGrey
                   : Colors.white,
             ),
