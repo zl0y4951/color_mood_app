@@ -1,0 +1,32 @@
+name: color_mood_app
+description: "Choose your mood by color"
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  #state-managment
+  flutter_bloc: ^8.1.6
+
+  # Persisting
+  shared_preferences: ^2.2.2
+  drift: ^2.13.1
+  drift_flutter: ^0.2.0
+  sqlite3_flutter_libs: ^0.5.18
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+  # Codegen
+  drift_dev: ^2.13.1
+  build_runner: ^2.4.6
+
+flutter:
+  uses-material-design: true
