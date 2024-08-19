@@ -26,9 +26,11 @@ class $MoodTableTable extends MoodTable with TableInfo<$MoodTableTable, Mood> {
   static const VerificationMeta _datetimeMeta =
       const VerificationMeta('datetime');
   @override
-  late final GeneratedColumn<DateTime> datetime = GeneratedColumn<DateTime>(
+  late final GeneratedColumn<int> datetime = GeneratedColumn<int>(
       'datetime', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   @override
   List<GeneratedColumn> get $columns => [id, moodCondition, datetime];
   @override
@@ -72,7 +74,7 @@ class $MoodTableTable extends MoodTable with TableInfo<$MoodTableTable, Mood> {
       moodCondition: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}mood_condition'])!,
       datetime: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}datetime'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}datetime'])!,
     );
   }
 
@@ -85,7 +87,7 @@ class $MoodTableTable extends MoodTable with TableInfo<$MoodTableTable, Mood> {
 class Mood extends DataClass implements Insertable<Mood> {
   final int id;
   final int moodCondition;
-  final DateTime datetime;
+  final int datetime;
   const Mood(
       {required this.id, required this.moodCondition, required this.datetime});
   @override
@@ -93,7 +95,7 @@ class Mood extends DataClass implements Insertable<Mood> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['mood_condition'] = Variable<int>(moodCondition);
-    map['datetime'] = Variable<DateTime>(datetime);
+    map['datetime'] = Variable<int>(datetime);
     return map;
   }
 
@@ -111,7 +113,7 @@ class Mood extends DataClass implements Insertable<Mood> {
     return Mood(
       id: serializer.fromJson<int>(json['id']),
       moodCondition: serializer.fromJson<int>(json['moodCondition']),
-      datetime: serializer.fromJson<DateTime>(json['datetime']),
+      datetime: serializer.fromJson<int>(json['datetime']),
     );
   }
   @override
@@ -120,11 +122,11 @@ class Mood extends DataClass implements Insertable<Mood> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'moodCondition': serializer.toJson<int>(moodCondition),
-      'datetime': serializer.toJson<DateTime>(datetime),
+      'datetime': serializer.toJson<int>(datetime),
     };
   }
 
-  Mood copyWith({int? id, int? moodCondition, DateTime? datetime}) => Mood(
+  Mood copyWith({int? id, int? moodCondition, int? datetime}) => Mood(
         id: id ?? this.id,
         moodCondition: moodCondition ?? this.moodCondition,
         datetime: datetime ?? this.datetime,
@@ -163,7 +165,7 @@ class Mood extends DataClass implements Insertable<Mood> {
 class MoodTableCompanion extends UpdateCompanion<Mood> {
   final Value<int> id;
   final Value<int> moodCondition;
-  final Value<DateTime> datetime;
+  final Value<int> datetime;
   const MoodTableCompanion({
     this.id = const Value.absent(),
     this.moodCondition = const Value.absent(),
@@ -172,13 +174,13 @@ class MoodTableCompanion extends UpdateCompanion<Mood> {
   MoodTableCompanion.insert({
     this.id = const Value.absent(),
     required int moodCondition,
-    required DateTime datetime,
+    required int datetime,
   })  : moodCondition = Value(moodCondition),
         datetime = Value(datetime);
   static Insertable<Mood> custom({
     Expression<int>? id,
     Expression<int>? moodCondition,
-    Expression<DateTime>? datetime,
+    Expression<int>? datetime,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -188,7 +190,7 @@ class MoodTableCompanion extends UpdateCompanion<Mood> {
   }
 
   MoodTableCompanion copyWith(
-      {Value<int>? id, Value<int>? moodCondition, Value<DateTime>? datetime}) {
+      {Value<int>? id, Value<int>? moodCondition, Value<int>? datetime}) {
     return MoodTableCompanion(
       id: id ?? this.id,
       moodCondition: moodCondition ?? this.moodCondition,
@@ -206,7 +208,7 @@ class MoodTableCompanion extends UpdateCompanion<Mood> {
       map['mood_condition'] = Variable<int>(moodCondition.value);
     }
     if (datetime.present) {
-      map['datetime'] = Variable<DateTime>(datetime.value);
+      map['datetime'] = Variable<int>(datetime.value);
     }
     return map;
   }
@@ -236,12 +238,12 @@ abstract class _$Database extends GeneratedDatabase {
 typedef $$MoodTableTableCreateCompanionBuilder = MoodTableCompanion Function({
   Value<int> id,
   required int moodCondition,
-  required DateTime datetime,
+  required int datetime,
 });
 typedef $$MoodTableTableUpdateCompanionBuilder = MoodTableCompanion Function({
   Value<int> id,
   Value<int> moodCondition,
-  Value<DateTime> datetime,
+  Value<int> datetime,
 });
 
 class $$MoodTableTableFilterComposer
@@ -257,7 +259,7 @@ class $$MoodTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<DateTime> get datetime => $state.composableBuilder(
+  ColumnFilters<int> get datetime => $state.composableBuilder(
       column: $state.table.datetime,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
@@ -276,7 +278,7 @@ class $$MoodTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<DateTime> get datetime => $state.composableBuilder(
+  ColumnOrderings<int> get datetime => $state.composableBuilder(
       column: $state.table.datetime,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
@@ -304,7 +306,7 @@ class $$MoodTableTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> moodCondition = const Value.absent(),
-            Value<DateTime> datetime = const Value.absent(),
+            Value<int> datetime = const Value.absent(),
           }) =>
               MoodTableCompanion(
             id: id,
@@ -314,7 +316,7 @@ class $$MoodTableTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int moodCondition,
-            required DateTime datetime,
+            required int datetime,
           }) =>
               MoodTableCompanion.insert(
             id: id,

@@ -17,15 +17,6 @@ class TodayScreen extends StatefulWidget {
 class _TodayScreenState extends State<TodayScreen> {
   int? current;
 
-  Widget _moodToWidget((int ind, MoodEnum mood) record) => MoodBoxWidget(
-        size: 70,
-        color: record.$2.color,
-        borderWidth: 3,
-        onTap: () => setState(() {
-          current = record.$1;
-        }),
-      );
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -33,11 +24,9 @@ class _TodayScreenState extends State<TodayScreen> {
         create: (_) => TodayBloc()..add(const TodayLoadEvent()),
         child: BlocBuilder<TodayBloc, TodayState>(
           builder: (context, state) {
-            // if (state is TodayIdleState) {
-            //   if (state.current != null) {
-            //     current = state.current!.moodCondition - 1;
-            //   }
-            // }
+            if (current == null && state.current != null) {
+              current = state.current!.moodCondition;
+            }
             return Column(
               children: [
                 const SizedBox(height: 54),
@@ -49,33 +38,39 @@ class _TodayScreenState extends State<TodayScreen> {
                 const SizedBox(height: 36),
                 MoodBoxWidget(
                   size: 200,
-                  color:
-                      current != null ? MoodEnum.values[current!].color : null,
+                  color: state.current != null
+                      ? MoodEnum.values[state.current!.moodCondition].color
+                      : null,
                 ),
                 const SizedBox(height: 144),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: MoodEnum.values.indexed
-                      .map(_moodToWidget)
-                      .toList(growable: false),
-                ),
-                const SizedBox(height: 72),
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: MoodEnum.values.indexed.map(
+                      (record) {
+                        return MoodBoxWidget(
+                            size: 70,
+                            color: record.$2.color,
+                            isOpacity: record.$1 != current,
+                            borderWidth: 3,
+                            onTap: () => setState(() {
+                                  current = record.$1;
+                                }));
+                      },
+                    ).toList(growable: false)),
+                const SizedBox(height: 48),
                 CustomButton(
-                  text: state is TodayIdleState && state.current != null
-                      ? 'Изменить'
-                      : 'Добавить',
+                  text: state.current != null ? 'Изменить' : 'Добавить',
                   padding: const EdgeInsets.symmetric(horizontal: 42),
                   onPressed: current == null
                       ? null
                       : () {
-                          context.read<TodayBloc>().add(
-                                TodayChooseMoodEvent(
-                                  MoodEntity(
-                                    moodCondition: current! + 1,
-                                    datetime: DateTime.now().getDay,
-                                  ),
-                                ),
-                              );
+                          context.read<TodayBloc>().add(TodayChooseMoodEvent(
+                              MoodEntity(
+                                  datetime: DateTime.now()
+                                          .getDay
+                                          .millisecondsSinceEpoch ~/
+                                      1000,
+                                  moodCondition: current!)));
                         },
                 )
               ],

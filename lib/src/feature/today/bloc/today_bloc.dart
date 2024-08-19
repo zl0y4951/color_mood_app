@@ -24,13 +24,14 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   }
 
   Future<void> _onLoad(emit) async {
-    final date = DateTime.now().getDay;
+    final date = DateTime.now().getDay.millisecondsSinceEpoch ~/ 1000;
     final currentMood = await _database.getCurrentMood(date);
-    emit(TodayIdleState(currentMood));
+    emit(TodayIdleState(current: currentMood));
   }
 
   Future<void> _onChoose(MoodEntity mood, emit) async {
+    if (mood.moodCondition == state.current?.moodCondition) return;
     await _database.insertMood(mood);
-    emit(TodayIdleState(mood));
+    emit(TodayIdleState(current: mood));
   }
 }

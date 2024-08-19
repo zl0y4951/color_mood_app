@@ -8,17 +8,17 @@ class MoodBoxWidget extends StatelessWidget {
       this.color,
       this.borderWidth = 4,
       this.onTap,
-      this.disabled = false});
+      this.isOpacity = false});
   final double? size;
   final Color? color;
   final double borderWidth;
   final VoidCallback? onTap;
-  final bool disabled;
+  final bool isOpacity;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: disabled ? null : onTap,
+      onTap: onTap,
       child: SizedBox.square(
         dimension: size,
         child: DecoratedBox(
@@ -27,7 +27,7 @@ class MoodBoxWidget extends StatelessWidget {
               width: borderWidth,
               color: CustomColors.black,
             ),
-            color: disabled ? color?.withOpacity(0.3) : color,
+            color: isOpacity ? color?.withOpacity(0.5) : color,
           ),
         ),
       ),

@@ -9,7 +9,7 @@ part 'database_impl.g.dart';
 class MoodTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get moodCondition => integer()();
-  DateTimeColumn get datetime => dateTime()();
+  IntColumn get datetime => integer().unique()();
 }
 
 @DriftDatabase(tables: [MoodTable])
@@ -25,7 +25,7 @@ class Database extends _$Database implements IDatabase {
   }
 
   @override
-  Future<MoodEntity?> getCurrentMood(DateTime date) async {
+  Future<MoodEntity?> getCurrentMood(int date) async {
     final mood = await (select(moodTable)
           ..where((tbl) => tbl.datetime.equals(date)))
         .getSingleOrNull();
@@ -42,7 +42,10 @@ class Database extends _$Database implements IDatabase {
 
   @override
   Future<void> insertMood(MoodEntity mood) async {
-    await into(moodTable).insert(mood.toCompanion());
+    await into(moodTable).insert(
+      mood.toCompanion(),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   @override
